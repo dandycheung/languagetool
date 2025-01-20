@@ -27,6 +27,7 @@ import org.languagetool.rules.CorrectExample;
 import org.languagetool.rules.ErrorTriggeringExample;
 import org.languagetool.rules.IncorrectExample;
 import org.languagetool.tagging.disambiguation.rules.DisambiguationPatternRule;
+import org.languagetool.tools.StringInterner;
 import org.languagetool.tools.StringTools;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -35,7 +36,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * XML rule handler that loads rules from XML and throws
@@ -56,6 +56,9 @@ public class XMLRuleHandler extends DefaultHandler {
   protected static final String PREMIUM = "premium";
   protected static final String YES = "yes";
   protected static final String OFF = "off";
+  protected static final String GOAL_SPECIFIC = "is_goal_specific";
+  protected static final String TRUE = "true";
+  protected static final String FALSE = "false";
   protected static final String TEMP_OFF = "temp_off";
   protected static final String ON = "on";
   protected static final String POSTAG = "postag";
@@ -99,9 +102,11 @@ public class XMLRuleHandler extends DefaultHandler {
   protected static final String TABNAME = "tab";
   protected static final String MINPREVMATCHES = "min_prev_matches";
   protected static final String DISTANCETOKENS = "distance_tokens";
+  protected static final String PRIO = "prio";
 
   protected List<AbstractPatternRule> rules = new ArrayList<>();
   protected Language language;
+  protected ResourceBundle messages;
 
   protected StringBuilder correctExample = new StringBuilder();
   protected StringBuilder antiPatternExample = new StringBuilder();
@@ -148,10 +153,22 @@ public class XMLRuleHandler extends DefaultHandler {
   protected boolean regExpression;
   protected boolean tokenNegated;
   protected boolean tokenInflected;
-  protected boolean isPremiumFile;
-  protected boolean isPremiumCategory;
-  protected boolean isPremiumRuleGroup;
+  protected String premiumRuleGroupAttribute;
+  protected String premiumCategoryAttribute;
+  protected String premiumFileAttribute;
   protected boolean isPremiumRule;
+  protected List<String> categoryTags = new ArrayList<>();
+  protected List<String> ruleGroupTags = new ArrayList<>();
+  protected List<String> ruleGroupToneTags = new ArrayList<>();
+  protected List<String> categoryToneTags = new ArrayList<>();
+  protected List<String> ruleTags = new ArrayList<>();
+  protected List<String> ruleToneTags = new ArrayList<>();
+  protected String isGoalSpecificCategoryAttribute;
+  protected String isGoalSpecificRuleGroupAttribute;
+  protected boolean isGoalSpecific;
+  protected int prioCategoryAttribute;
+  protected int prioRuleGroupAttribute;
+  protected int prioRuleAttribute;
 
   protected boolean tokenLevelCaseSensitive;
   protected boolean tokenLevelCaseSet;
@@ -430,7 +447,7 @@ public class XMLRuleHandler extends DefaultHandler {
     exceptionStringInflected = YES.equals(attrs.getValue(INFLECTED));
 
     if (attrs.getValue(POSTAG) != null) {
-      exceptionPosToken = internString(attrs.getValue(POSTAG));
+      exceptionPosToken = StringInterner.intern(attrs.getValue(POSTAG));
       exceptionPosRegExp = YES.equals(attrs.getValue(POSTAG_REGEXP));
       exceptionPosNegation = YES.equals(attrs.getValue(NEGATE_POS));
     }
@@ -507,7 +524,7 @@ public class XMLRuleHandler extends DefaultHandler {
     }
     elements = new StringBuilder();
     if (attrs.getValue(POSTAG) != null) {
-      posToken = internString(attrs.getValue(POSTAG));
+      posToken = StringInterner.intern(attrs.getValue(POSTAG));
       posRegExp = YES.equals(attrs.getValue(POSTAG_REGEXP));
       posNegation = YES.equals(attrs.getValue(NEGATE_POS));
     }
@@ -515,9 +532,9 @@ public class XMLRuleHandler extends DefaultHandler {
       throw new SAXException("You cannot set both 'chunk' and 'chunk_re' for " + id);
     }
     if (attrs.getValue(CHUNKTAG) != null) {
-      chunkTag = new ChunkTag(internString(attrs.getValue(CHUNKTAG)));
+      chunkTag = new ChunkTag(StringInterner.intern(attrs.getValue(CHUNKTAG)));
     } else if (attrs.getValue(CHUNKTAG_REGEXP) != null) {
-      chunkTag = new ChunkTag(internString(attrs.getValue(CHUNKTAG_REGEXP)), true);
+      chunkTag = new ChunkTag(StringInterner.intern(attrs.getValue(CHUNKTAG_REGEXP)), true);
     }
     regExpression = YES.equals(attrs.getValue(REGEXP));
     if (attrs.getValue(SPACEBEFORE) != null) {
@@ -666,8 +683,7 @@ public class XMLRuleHandler extends DefaultHandler {
         ((RegexPatternRule) rule).setRegexFilter(filter);
         rule.setFilterArguments(filterArgs);
       } else if (rule instanceof PatternRule || rule instanceof DisambiguationPatternRule) {
-        RuleFilterCreator creator = new RuleFilterCreator();
-        RuleFilter filter = creator.getFilter(filterClassName);
+        RuleFilter filter = RuleFilterCreator.getInstance().getFilter(filterClassName);
         rule.setFilter(filter);
         rule.setFilterArguments(filterArgs);
       } else {
@@ -676,18 +692,12 @@ public class XMLRuleHandler extends DefaultHandler {
     }
   }
 
-  private final Map<String, String> internedStrings = new HashMap<>();
-
-  protected String internString(String s) {
-    return internedStrings.computeIfAbsent(s, Function.identity());
-  }
-
   private final Map<Triple<String, Boolean, Boolean>, StringMatcher> internedMatchers = new HashMap<>();
 
   private StringMatcher internMatcher(String text, boolean regexp, boolean caseSensitive) {
-    text = internString(PatternToken.normalizeTextPattern(text));
+    text = StringInterner.intern(PatternToken.normalizeTextPattern(text));
     return internedMatchers.computeIfAbsent(Triple.of(text, regexp, caseSensitive), t ->
-      StringMatcher.create(t.getLeft(), t.getMiddle(), t.getRight(), this::internString));
+      StringMatcher.create(t.getLeft(), t.getMiddle(), t.getRight()));
   }
 
   private final Map<Triple<String, Boolean, Boolean>, PatternToken.PosToken> internedPos = new HashMap<>();

@@ -35,16 +35,35 @@ import org.languagetool.tagging.disambiguation.ru.RussianHybridDisambiguator;
 import org.languagetool.tagging.ru.RussianTagger;
 import org.languagetool.tokenizers.SRXSentenceTokenizer;
 import org.languagetool.tokenizers.SentenceTokenizer;
+import org.languagetool.tokenizers.Tokenizer;
+import org.languagetool.tokenizers.ru.RussianWordTokenizer;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-public class Russian extends Language implements AutoCloseable {
+public class Russian extends LanguageWithModel {
 
-  private LanguageModel languageModel;
+  private static final String LANGUAGE_SHORT_CODE = "ru";
 
+  private static volatile Throwable instantiationTrace;
+
+  public Russian() {
+    Throwable trace = instantiationTrace;
+    if (trace != null) {
+      throw new RuntimeException("Language was already instantiated, see the cause stacktrace below.", trace);
+    }
+    instantiationTrace = new Throwable();
+  }
+
+  /**
+   * This is a fake constructor overload for the subclasses. Public constructors can only be used by the LT itself.
+   */
+  protected Russian(boolean fakeValue) {
+  }
   @Override
   public Pattern getIgnoredCharactersRegex() {
     return Pattern.compile("[\u00AD\u0301\u0300]");
@@ -57,7 +76,7 @@ public class Russian extends Language implements AutoCloseable {
 
   @Override
   public String getShortCode() {
-    return "ru";
+    return LANGUAGE_SHORT_CODE;
   }
 
   @Override
@@ -73,9 +92,8 @@ public class Russian extends Language implements AutoCloseable {
 
   @Override
   public Disambiguator createDefaultDisambiguator() {
-    return RussianHybridDisambiguator.INSTANCE;
+    return RussianHybridDisambiguator.getInstance();
   }
-
 
   @Nullable
   @Override
@@ -93,6 +111,11 @@ public class Russian extends Language implements AutoCloseable {
   @Override
   public SentenceTokenizer createDefaultSentenceTokenizer() {
     return new SRXSentenceTokenizer(this);
+  }
+
+  @Override
+  public Tokenizer createDefaultWordTokenizer() {
+    return new RussianWordTokenizer();
   }
 
   @Override
@@ -138,12 +161,12 @@ public class Russian extends Language implements AutoCloseable {
             new CommaWhitespaceRule(messages,
                     Example.wrong("Не род<marker> ,</marker> а ум поставлю в воеводы."),
                     Example.fixed("Не род<marker>,</marker> а ум поставлю в воеводы.")),
-            new DoublePunctuationRule(messages),
+        //  new DoublePunctuationRule(messages),  // replace to xml rule
             new UppercaseSentenceStartRule(messages, this,
                     Example.wrong("Закончилось лето. <marker>дети</marker> снова сели за школьные парты."),
                     Example.fixed("Закончилось лето. <marker>Дети</marker> снова сели за школьные парты.")),
             new MorfologikRussianSpellerRule(messages, this, userConfig, altLanguages),
-            new WordRepeatRule(messages, this),
+        //  new WordRepeatRule(messages, this), // move to RussianSimpleWordRepeatRule
             new MultipleWhitespaceRule(messages, this),
 	    new SentenceWhitespaceRule(messages),
             new WhiteSpaceBeforeParagraphEnd(messages, this),  
@@ -164,6 +187,7 @@ public class Russian extends Language implements AutoCloseable {
             new RussianUnpairedBracketsRule(messages, this),
             new RussianCompoundRule(messages, this, userConfig),
             new RussianSimpleReplaceRule(messages),
+            new RussianSimpleWordRepeatRule(messages, this),
             new RussianWordCoherencyRule(messages),
             new RussianWordRepeatRule(messages),
             new RussianWordRootRepeatRule(messages),
@@ -175,28 +199,10 @@ public class Russian extends Language implements AutoCloseable {
 
   /** @since 3.1 */
   @Override
-  public synchronized LanguageModel getLanguageModel(File indexDir) throws IOException {
-    languageModel = initLanguageModel(indexDir, languageModel);
-    return languageModel;
-  }
-
-  /** @since 3.1 */
-  @Override
   public List<Rule> getRelevantLanguageModelRules(ResourceBundle messages, LanguageModel languageModel, UserConfig userConfig) throws IOException {
-    return Arrays.asList(
-            new RussianConfusionProbabilityRule(messages, languageModel, this)
+    return List.of(
+      new RussianConfusionProbabilityRule(messages, languageModel, this)
     );
-  }
-
-  /**
-   * Closes the language model, if any. 
-   * @since 3.1
-   */
-  @Override
-  public void close() throws Exception {
-    if (languageModel != null) {
-      languageModel.close();
-    }
   }
 
   /** @since 3.3 */
@@ -208,16 +214,16 @@ public class Russian extends Language implements AutoCloseable {
   @Override
   protected int getPriorityForId(String id) {
     switch (id) {
-      case "RU_DASH_RULE":                  return 12;   // higher prio than RU_COMPOUNDS
+      case "RU_DASH_RULE":                  return 12;  // higher prio than RU_COMPOUNDS
       case "RU_COMPOUNDS":                  return 11;
-      case "RUSSIAN_SIMPLE_REPLACE_RULE":   return 10;   // higher prio than spell checker
+      case "RUSSIAN_SIMPLE_REPLACE_RULE":   return 10;  // higher prio than spell checker
       case "RUSSIAN_SPECIFIC_CASE":         return 9;   // higher prio than spell checker
-      case "MORFOLOGIC_RULE_RU_RU_YO":      return 2;   //  spell checker yo
-      case "MORFOLOGIC_RULE_RU_RU":         return 1;   //  standard spell checker yo+ie
+      case "MORFOLOGIC_RULE_RU_RU_YO":      return 2;   // spell checker yo
+      case "MORFOLOGIC_RULE_RU_RU":         return 1;   // standard spell checker yo+ie
 
 
       case "Word_root_repeat":              return -1;
-
+      case "PUNCT_DPT_2":                   return -2;
       case "TOO_LONG_PARAGRAPH":            return -15;
     }
     return super.getPriorityForId(id);
@@ -227,5 +233,13 @@ public class Russian extends Language implements AutoCloseable {
   @Override
   protected SpellingCheckRule createDefaultSpellingRule(ResourceBundle messages) throws IOException {
     return new MorfologikRussianSpellerRule(messages, this, null, null);
+  }
+
+  public static @NotNull Russian getInstance() {
+    Language language = Objects.requireNonNull(Languages.getLanguageForShortCode(LANGUAGE_SHORT_CODE));
+    if (language instanceof Russian russian) {
+      return russian;
+    }
+    throw new RuntimeException("Russian language expected, got " + language);
   }
 }

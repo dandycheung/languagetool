@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +32,9 @@ import org.languagetool.AnalyzedToken;
 import org.languagetool.AnalyzedTokenReadings;
 import org.languagetool.JLanguageTool;
 import org.languagetool.TestTools;
-import org.languagetool.language.Ukrainian;
 import org.languagetool.rules.RuleMatch;
 
-public class TokenAgreementNumrNounRuleTest {
-
-  private JLanguageTool lt;
-  private TokenAgreementNumrNounRule rule;
+public class TokenAgreementNumrNounRuleTest extends AbstractRuleTest {
 
 //  static {
 //    System.setProperty("org.languagetool.rules.uk.TokenInflectionAgreementRule.debug", "true");
@@ -47,7 +42,6 @@ public class TokenAgreementNumrNounRuleTest {
   
   @Before
   public void setUp() throws IOException {
-    lt = new JLanguageTool(new Ukrainian());
     rule = new TokenAgreementNumrNounRule(TestTools.getMessages("uk"), lt.getLanguage());
 //    TokenInflectionAgreementRule.DEBUG = true;
   }
@@ -87,6 +81,9 @@ public class TokenAgreementNumrNounRuleTest {
     assertEmptyMatch("2 лютого їжака забрали");
     assertEmptyMatch("Ту-154 президента");
     
+    // prep
+    assertEmptyMatch("до 4 секунд");
+    
     // двоїна
     assertEmptyMatch("2 сонця");
     // different apostrophes
@@ -94,12 +91,20 @@ public class TokenAgreementNumrNounRuleTest {
     
 
     assertEmptyMatch("багато часу");
+    assertEmptyMatch("Минуло багато-багато часу");
     assertEmptyMatch("багато заліза");
     assertHasError("як багато білку", "багато білка", "багато білки", "багато білок", "багато білків");
 
     assertEmptyMatch("пів ковбаси");
     
     assertEmptyMatch("Вісімдесят Геннадію Терентійовичу");
+
+    assertEmptyMatch("3 подолянина");
+    assertEmptyMatch("два подолянина");
+    assertEmptyMatch("три рабини");
+    // обидва (є) волиняни
+    assertEmptyMatch("Обидва волиняни");
+    assertEmptyMatch("Обидва волинянина");
 
 
     // odd plurals
@@ -179,6 +184,9 @@ public class TokenAgreementNumrNounRuleTest {
     assertEmptyMatch("сьома вода на киселі");
     assertEmptyMatch("років п'ять люди");
     assertEmptyMatch("років через десять Литва");
+    
+    assertEmptyMatch("у 2020 мати надійний фундамент");
+    assertEmptyMatch("тижнів зо два мати горшком воду носила");
   }
 
   @Test
@@ -197,6 +205,17 @@ public class TokenAgreementNumrNounRuleTest {
     assertEmptyMatch("один-два громадянини");
     assertEmptyMatch("Обидві ходи");
     assertEmptyMatch("обидва атентати");
+    
+    assertHasError("два подоляни", "два подолянина");
+    assertHasError("33 подоляни", "33 подолянина");
+    assertHasError("три рабина");
+
+    // може бути як adj "до 3-ї секунди"
+//    assertHasError("до 3 секунди");
+    
+    //TODO:
+//    assertHasError("3 Механістична");
+    
     // TOOD:
 //  assertEmptyMatch("місяців зо два заготовки для них роблять");
     // по гектарів два капусти
@@ -360,6 +379,7 @@ public class TokenAgreementNumrNounRuleTest {
   
   @Test
   public void testRuleDisambigVZna() throws IOException {
+    assertHasError("два додаткових років");
     
     ArrayList<AnalyzedTokenReadings> readings = new ArrayList<>();
     
@@ -370,32 +390,37 @@ public class TokenAgreementNumrNounRuleTest {
     AnalyzedSentence sent = new AnalyzedSentence(readings.toArray(new AnalyzedTokenReadings[0]));
 
     assertEquals(0, rule.match(sent).length);
-  }
-  
-  
-  private void assertEmptyMatch(String text) {
-    try {
-      assertEquals(Collections.<RuleMatch>emptyList(), Arrays.asList(rule.match(lt.getAnalyzedSentence(text))));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
-  private void assertHasError(String text, String... suggestions) {
-    try {
-      AnalyzedSentence sent = lt.getAnalyzedSentence(text);
-      RuleMatch[] match = rule.match(sent);
-      assertEquals(1, match.length);
-      if( suggestions.length > 0 ) {
-        assertEquals(Arrays.asList(suggestions), match[0].getSuggestedReplacements());
-      }
-      
-      for(String sugg: suggestions) {
-        assertEmptyMatch(sugg);
-      }
-      
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    readings.clear();
+
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("", JLanguageTool.SENTENCE_START_TAGNAME, ""), 0));
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("три", "numr:p:v_zna", "три"), 0));
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("основні", "adj:p:v_zna:rinanim:compb", "основний"), 0));
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("села", "noun:inanim:p:v_zna", "село"), 0));
+    
+    sent = new AnalyzedSentence(readings.toArray(new AnalyzedTokenReadings[0]));
+
+    assertEquals(0, rule.match(sent).length);
+
+    readings.clear();
+
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("", JLanguageTool.SENTENCE_START_TAGNAME, ""), 0));
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("три", "numr:p:v_zna", "три"), 0));
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("золоті", "adj:p:v_zna:rinanim:compb", "золотий"), 0));
+    
+    sent = new AnalyzedSentence(readings.toArray(new AnalyzedTokenReadings[0]));
+
+    assertEquals(0, rule.match(sent).length);
+
+    readings.clear();
+
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("", JLanguageTool.SENTENCE_START_TAGNAME, ""), 0));
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("три", "numr:p:v_zna", "три"), 0));
+    readings.add(new AnalyzedTokenReadings(new AnalyzedToken("мільйони", "мільйон/noun:inanim:p:v_zna:&numr", "мільйон"), 0));
+    
+    sent = new AnalyzedSentence(readings.toArray(new AnalyzedTokenReadings[0]));
+
+    assertEquals(0, rule.match(sent).length);
   }
+  
 }
