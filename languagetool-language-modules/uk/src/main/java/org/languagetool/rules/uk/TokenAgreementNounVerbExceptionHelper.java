@@ -50,8 +50,8 @@ public final class TokenAgreementNounVerbExceptionHelper {
     // Любителі фотографувати їжу
     // навичка збиратися швидко (але не «навички»)
     if( PosTagHelper.hasPosTag(tokens[verbPos], PosTagHelper.VERB_INF_PATTERN) ) {
-      if( CaseGovernmentHelper.hasCaseGovernment(tokens[nounPos], "v_inf") 
-          && ! PosTagHelper.hasPosTagStart(tokens[nounPos], "noun:inanim:p:v_naz") ) {
+      if( CaseGovernmentHelper.hasCaseGovernment(tokens[nounPos], "v_inf") ) { 
+          //&& ! PosTagHelper.hasPosTagStart(tokens[nounPos], "noun:inanim:p:v_naz") ) {
         logException();
         return true;
       }
@@ -80,6 +80,13 @@ public final class TokenAgreementNounVerbExceptionHelper {
       logException();
       return true;
     }
+
+    // це була (не має значення, бо це - part)
+//    if( tokens[nounPos].getCleanToken().equalsIgnoreCase("це") 
+//        && LemmaHelper.hasLemma(tokens[verbPos], "бути") ) {
+//      logException();
+//      return true;
+//    }
 
     if( Arrays.asList("правда").contains(tokens[nounPos].getToken().toLowerCase()) ) {
       logException();
@@ -172,6 +179,15 @@ public final class TokenAgreementNounVerbExceptionHelper {
     if( nounPos > 1
         && PosTagHelper.hasPosTag(tokens[nounPos], Pattern.compile("noun:anim:.:v_naz:prop:[fl]name.*"))
         && Arrays.asList("ім'я", "прізвище", "прізвисько").contains(tokens[nounPos-1].getCleanToken().toLowerCase()) ) {
+      logException();
+      return true;
+    }
+    
+    // матч Туреччина — Україна зіграють
+    if( nounPos > 2
+        && PosTagHelper.hasPosTag(tokens[nounPos], Pattern.compile("noun.*:v_naz.*prop.*"))
+        && tokens[nounPos-1].getCleanToken().matches("[-\u2013\u2014]")
+        && PosTagHelper.hasPosTag(tokens[nounPos-2], Pattern.compile("noun.*:v_naz.*prop.*")) ) {
       logException();
       return true;
     }
@@ -672,6 +688,15 @@ public final class TokenAgreementNounVerbExceptionHelper {
         logException();
         return true;
       }
+      
+      // У місті Біла Церква було сформовано
+      if( nounPos > 2
+          && LemmaHelper.isPossiblyProperNoun(tokens[nounPos])
+          && LemmaHelper.isPossiblyProperNoun(tokens[nounPos-1])
+          && LemmaHelper.hasLemma(tokens[nounPos-2], GEO_QUALIFIERS) ) {
+        logException();
+        return true;
+      }
     }
     
     // У невизнаній республіці Південна Осетія відбулися вибори
@@ -877,5 +902,5 @@ public final class TokenAgreementNounVerbExceptionHelper {
       logger.debug("exception: " /*+ stackTraceElement.getFileName()*/ + stackTraceElement.getLineNumber());
     }
   }
-
+  
 }

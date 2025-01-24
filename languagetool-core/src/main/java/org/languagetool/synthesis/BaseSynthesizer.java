@@ -39,10 +39,13 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import static org.languagetool.tools.StringInterner.intern;
+
 public class BaseSynthesizer implements Synthesizer {
 
   public final String SPELLNUMBER_TAG = "_spell_number_";
-  public final String SPELLNUMBER_FEMININE_TAG = "_spell_number_feminine_";
+  public final String SPELLNUMBER_FEMININE_TAG = "_spell_number_:feminine";
+  public final String SPELLNUMBER_ROMAN_TAG = "_spell_number_:Roman";
 
   protected volatile List<String> possibleTags;
 
@@ -54,8 +57,11 @@ public class BaseSynthesizer implements Synthesizer {
   private final ManualSynthesizer removalSynthesizer2;
   private final String sorosFileName;
   private final Soros numberSpeller;
+  private final Soros romanNumberer;
   
   private volatile Dictionary dictionary;
+
+  protected Language language = null;
 
   /**
    * @param resourceFileName The dictionary file name.
@@ -64,6 +70,7 @@ public class BaseSynthesizer implements Synthesizer {
    */
   public BaseSynthesizer(String sorosFileName, String resourceFileName, String tagFileName, Language lang) {
     this(sorosFileName, resourceFileName, tagFileName, lang.getShortCode());
+    this.language = lang;
   }
 
   /**
@@ -77,6 +84,7 @@ public class BaseSynthesizer implements Synthesizer {
     this.stemmer = createStemmer();
     this.sorosFileName = sorosFileName;
     this.numberSpeller = createNumberSpeller(langShortCode);
+    this.romanNumberer = createRomanNumberer();
     try {
       String path = "/" + langShortCode + "/added.txt";
       if (JLanguageTool.getDataBroker().resourceExists(path)) {
@@ -113,6 +121,7 @@ public class BaseSynthesizer implements Synthesizer {
    */
   public BaseSynthesizer(String resourceFileName, String tagFileName, Language lang) {
     this(resourceFileName, tagFileName, lang.getShortCode());
+    this.language = lang;
   }
 
   public BaseSynthesizer(String resourceFileName, String tagFileName, String langShortCode) {
@@ -167,6 +176,24 @@ public class BaseSynthesizer implements Synthesizer {
     }
     return s;
   }
+  
+  private Soros createRomanNumberer() {
+    Soros s;
+    try {
+      URL url = JLanguageTool.getDataBroker().getFromResourceDirAsUrl("Roman.sor");
+      BufferedReader f = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+      StringBuilder sb = new StringBuilder();
+      String line;
+      while ((line = f.readLine()) != null) {
+        sb.append(line);
+        sb.append('\n');
+      }
+      s = new Soros(new String(sb), "Roman");
+    } catch (Exception e) {
+      return null;
+    }
+    return s;
+  }
 
   /**
    * Lookup the inflected forms of a lemma defined by a part-of-speech tag.
@@ -216,6 +243,9 @@ public class BaseSynthesizer implements Synthesizer {
     }
     if (posTag.equals(SPELLNUMBER_FEMININE_TAG)) {
       return new String[] {getSpelledNumber("feminine " + token.getToken())};
+    }
+    if (posTag.equals(SPELLNUMBER_ROMAN_TAG)) {
+      return new String[] {getRomanNumber(token.getToken())};
     }
     List<String> wordForms = lookup(token.getLemma(), posTag);
     return removeExceptions(wordForms.toArray(new String[0]));
@@ -281,7 +311,7 @@ public class BaseSynthesizer implements Synthesizer {
     if (manualSynthesizer != null) {
       for (String tag : manualSynthesizer.getPossibleTags()) {
         if (!tags.contains(tag)) {
-          tags.add(tag);
+          tags.add(intern(tag));
         }
       }
     }
@@ -292,6 +322,13 @@ public class BaseSynthesizer implements Synthesizer {
   public String getSpelledNumber(String arabicNumeral) {
     if (numberSpeller != null) {
       return numberSpeller.run(arabicNumeral);
+    }
+    return arabicNumeral;
+  }
+  
+  public String getRomanNumber(String arabicNumeral) {
+    if (romanNumberer != null) {
+      return romanNumberer.run(arabicNumeral);
     }
     return arabicNumeral;
   }
@@ -308,6 +345,15 @@ public class BaseSynthesizer implements Synthesizer {
       }
     }
     return results.toArray(new String[0]);
+  }
+
+  @Override
+  public String getTargetPosTag(List<String> posTags, String targetPosTag) {
+    if (posTags.isEmpty()) {
+      return targetPosTag;
+    }
+    // return the last one to keep the previous results
+    return posTags.get(posTags.size() - 1);
   }
 
 }

@@ -216,7 +216,7 @@ class AgreementRuleAntiPatterns2 {
     asList(
       csToken("zum"),
       csToken("einen"),
-      posRegex("ADJ:.+")
+      posRegex("(ADJ|PA[12]):.+")
     ),
     asList(
       token("auf"),
@@ -621,8 +621,29 @@ class AgreementRuleAntiPatterns2 {
     ),
     asList(
       // In der aktuellen Niedrigzinsphase bedeutet das sehr geringe Zinsen, die aber deutlich ansteigen können.
-      csRegex("bedeutete?"),
+      tokenRegex("bedeutete?"),
       csRegex("das|(eben)?dies")
+    ),
+    asList(
+      // Bietet das Vorteile, außer dass es "intelligent" wirkt?
+      tokenRegex("bietete?"),
+      csRegex("das|(eben)?dies"),
+      posRegex("SUB.*PLU.*")
+    ),
+    asList(
+      // Bietet das große Vorteile, außer dass es "intelligent" wirkt?
+      csRegex("bietete?"),
+      csRegex("das|(eben)?dies"),
+      posRegex("ADJ.*PLU.*"),
+      posRegex("SUB.*PLU.*")
+    ),
+    asList(
+      // Bietet das sehr große Vorteile, außer dass es "intelligent" wirkt?
+      csRegex("bietete?"),
+      csRegex("das|(eben)?dies"),
+      posRegex("ADV.*"),
+      posRegex("ADJ.*PLU.*"),
+      posRegex("SUB.*PLU.*")
     ),
     asList(
       csRegex("das|es|(eben)?dies"),
@@ -639,7 +660,7 @@ class AgreementRuleAntiPatterns2 {
       posRegex("VER.*[123].*"),
       tokenRegex("und|oder|aber"),
       new PatternTokenBuilder().posRegex("PRP.*").min(0).build(),
-      posRegex("ART:DEF.*")
+      tokenRegex("der|die|das|dem|den")  // nicht 'des' weil sonst nicht gefunden: "Wir haben das Abo beendet und des Betrag erstattet."
     ),
     asList( // weil man oft bei **anderen schreckliches Essen** vorgesetzt bekommt
       tokenRegex("bei|zum"),

@@ -20,9 +20,10 @@ package org.languagetool.rules;
 
 import org.languagetool.AnalyzedTokenReadings;
 import org.languagetool.Language;
+import org.languagetool.rules.patterns.PatternRule;
 import org.languagetool.rules.patterns.RuleFilter;
 import org.languagetool.rules.spelling.SpellingCheckRule;
-import org.languagetool.tools.Tools;
+import org.languagetool.tagging.Tagger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,24 +32,35 @@ import java.util.Map;
 
 public abstract class AbstractSuppressMisspelledSuggestionsFilter extends RuleFilter {
 
-  protected final Language language;
+  protected AbstractSuppressMisspelledSuggestionsFilter() {
 
-  protected AbstractSuppressMisspelledSuggestionsFilter(Language language) {
-    this.language = language;
   }
 
   @Override
   public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> arguments, int patternTokenPos,
-      AnalyzedTokenReadings[] patternTokens) throws IOException {
+                                   AnalyzedTokenReadings[] patternTokens, List<Integer> tokenPositions) throws IOException {
     RuleMatch ruleMatch = match;
+    Language language = ((PatternRule) match.getRule()).getLanguage();
+    Tagger tagger = language.getTagger();
     List<String> replacements = match.getSuggestedReplacements();
     List<String> newReplacements = new ArrayList<>();
-    for (String r : replacements) {
-      if (!isMisspelled(r)) {
-        newReplacements.add(r);
+    String suppressMatch = getRequired("suppressMatch", arguments);
+    String suppressPostag = getOptional("SuppressPostag", arguments);
+    List<AnalyzedTokenReadings> atrs = new ArrayList<>();
+    if (tagger != null && suppressPostag != null) {
+      atrs = tagger.tag(replacements);
+    }
+    for (int i = 0; i < replacements.size(); i++) {
+      if (!isMisspelled(replacements.get(i), language)) {
+        if (tagger != null && suppressPostag != null) {
+          if (!atrs.get(i).matchesPosTagRegex(suppressPostag)) {
+            newReplacements.add(replacements.get(i));
+          }
+        } else {
+          newReplacements.add(replacements.get(i));
+        }
       }
     }
-    String suppressMatch = getRequired("suppressMatch", arguments);
     boolean bSuppressMatch = true;
     if (suppressMatch != null && suppressMatch.equalsIgnoreCase("false")) {
       bSuppressMatch = false;
@@ -61,20 +73,18 @@ public abstract class AbstractSuppressMisspelledSuggestionsFilter extends RuleFi
     }
   }
 
-  public boolean isMisspelled(String s) throws IOException {
+  public boolean isMisspelled(String s, Language language) throws IOException {
     SpellingCheckRule spellerRule = language.getDefaultSpellingRule();
-    if (spellerRule == null) return false;
-
-    try  {
-      List<String> tokens = language.getWordTokenizer().tokenize(s);
-      boolean isMisspelled = false;
-      for (String token : tokens) {
-        isMisspelled = isMisspelled || (spellerRule != null && spellerRule.isMisspelled(token));
-      }
-      return isMisspelled;
-    } catch(IOException e) {
-      throw new RuntimeException(e);
+    if (spellerRule == null) {
+      return false;
     }
+    List<String> tokens = language.getWordTokenizer().tokenize(s);
+    for (String token : tokens) {
+      if (spellerRule.isMisspelled(token)) {
+        return true;
+      };
+    }
+    return false;
   }
 
 }

@@ -4,10 +4,8 @@
 <formathandle type="start" include="no"></formathandle>
 <formathandle type="end" include="yes"></formathandle>
 <formathandle type="isolated" include="no"></formathandle>
-<okpsrx:options oneSegmentIncludesAll="no" trimLeadingWhitespaces="no" trimTrailingWhitespaces="no" useJavaRegex="yes"></okpsrx:options>
-<okpsrx:sample language="pl" useMappedRules="yes">Als een hoogleraar met emeritaat ('pensioen') is, mag hij de functieaanduiding prof. blijven gebruiken, maar hij heeft tevens het recht gekregen om het bijvoeglijk naamwoord emeritus (Latijn voor 'uitgediend') aan zijn functietitel toe te voegen: em. prof. dr.
-Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg waar hij met behulp van een oudere, rijke vriendin (met wie hij later trouwde) zijn eerste vliegtuigen bouwde, het waren passagierstoestellen.
-250 p. n.e.</okpsrx:sample>
+<okpsrx:options oneSegmentIncludesAll="no" trimLeadingWhitespaces="no" trimTrailingWhitespaces="no" useJavaRegex="yes" useIcu4JBreakRules="no" treatIsolatedCodesAsWhitespace="no"></okpsrx:options>
+<okpsrx:sample language="nl" useMappedRules="yes"> ON! is een omroep.</okpsrx:sample>
 <okpsrx:rangeRule></okpsrx:rangeRule>
 </header>
 <body>
@@ -1109,6 +1107,14 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 </languagerule>
 <languagerule languagerulename="English">
+<rule break="no"><!-- https://www.seven.one/ -->
+<beforebreak>\b[Se]even\.</beforebreak>
+<afterbreak>[Oo]ne\b</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\b[1-9]\.[\s\u00A0]</beforebreak>
+<afterbreak>[a-z]</afterbreak>
+</rule>
 <rule break="no">
 <beforebreak>[\u00A0\s]</beforebreak>
 <afterbreak>\n</afterbreak>
@@ -1166,7 +1172,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak>D\.?</afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b([Aa]vg|[Ee]d|pp|[Vv]iz|i\.?[\s\u00A0]*e|[Vvol]|[Rr]col|maj|Lt|[Ff]ig|[Ff]igs|[Vv]iz|[Vv]ols|[Aa]pprox|[Ii]ncl?|[Aa]cc|Pres|[Cc]orp|[Ee]x|[Cc]onn|[Dd]ept|[Ll]tda|[Mm]in|[Mm]ax|[Gg]ovt|[Rr]etd|Ing|lb|lbf|ft|c\.?[\s\u00A0]*f|vs|dia|lbs|\d+-(:?oz|kc|in|h[rp]|ml)|M?sec)\.[\s\u00A0]</beforebreak>
+<beforebreak>\b([Aa]vg|[Ee]d|pp|[Vv]iz|i\.?[\s\u00A0]*e|[Vvol]|[Rr]col|maj|Lt|[Ff]ig|[Ee]xt|[Ff]igs|[Vv]iz|[Vv]ols|[Aa]pprox|[Aa]cq|[Ii]ncl?|[Ee]xcl|[Aa]cc|Pres|[Cc]orp|[Ee]x|[Cc]onn|[Dd]ept|[Ll]tda|[Mm]in|[Mm]ax|[Gg]ovt|[Rr]etd|Ing|lb|lbf|ft|c\.?[\s\u00A0]*f|vs|dia|lbs|\d+-(:?oz|kc|in|h[rp]|ml)|M?sec)\.[\s\u00A0]</beforebreak>
 <afterbreak>[^\p{Lu}]|I</afterbreak>
 </rule>
 <rule break="no">
@@ -1184,6 +1190,10 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <rule break="no">
 <beforebreak>(…|\.\.\.)[\s\u00A0]?\)[\s\u00A0]</beforebreak>
 <afterbreak>[^\p{P}]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>[?!.…]["”]\)[\s\u00A0]</beforebreak>
+<afterbreak>[a-z].*</afterbreak>
 </rule>
 <rule break="no">
 <beforebreak>(…|\.\.\.)[\s\u00A0]?\?\)[\s\u00A0]</beforebreak>
@@ -1271,7 +1281,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\bLL\.[\s\u00A0]?[BM]\.[\s\u00A0]</beforebreak>
+<beforebreak>\bLL\.[\s\u00A0]?[BMD]\.[\s\u00A0]</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -1280,7 +1290,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <rule break="no">
 <beforebreak>\bLL\.[\s\u00A0]?</beforebreak>
-<afterbreak>[BM]\.?</afterbreak>
+<afterbreak>[BMD]\.?</afterbreak>
 </rule>
 <rule break="no">
 <beforebreak>\b[BM]\.[\s\u00A0]?</beforebreak>
@@ -1327,7 +1337,11 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\bCorp\.[\s\u00A0]</beforebreak>
+<beforebreak>\b[cC]orp\.[\s\u00A0]</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\b[Rr]eg\.[\s\u00A0]</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -1539,6 +1553,27 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </languagerule>
 <languagerule languagerulename="Dutch">
 <rule break="no">
+<beforebreak>\sart\.\s</beforebreak>
+<afterbreak>[IVX]+[ .]</afterbreak>
+</rule>
+<!--Do not break after abbreviation of type a.b.c.-->
+<rule break="no">
+<beforebreak>\s([a-z]\.){2,10}\s</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>[ ]is[.][ ]</beforebreak>
+<afterbreak>[0-9]\.($|[ ])</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>(^| )O\.\s</beforebreak>
+<afterbreak>([A-Z][a-z]{1,3}[ ,:;.!?]|Indië|Wanneer|Kunnen|Sorry)</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\sEd[.]\s</beforebreak>
+<afterbreak>([A-Z][a-z]{1,3}|Wanneer|Misschien|Daarna|Zoals|Zelfs|Bedankt|Zullen|Vooral|Volgens|Vervolgens)(\s|[,:;])</afterbreak>
+</rule>
+<rule break="no">
 <beforebreak>\b(sp|SP)</beforebreak>
 <afterbreak>\.[aA]\b</afterbreak>
 </rule>
@@ -1567,6 +1602,10 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <beforebreak>\b(enz|etc|zat|ambt|al|ver|art|wed|lab|bv|Bros)\.\s</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
+<rule break="yes">
+<beforebreak>\s(la|do|del?)\sMar\.\s</beforebreak>
+<afterbreak></afterbreak>
+</rule>
 <rule break="no">
 <beforebreak>\b(Ge?n|Ex|Le?v|Nu?m|D(eu)?t|Jo?z|Ri|R[ei]cht|Sa?m|Ko?n|Kr[on]{0,2}|Neh?|Est?|Jb|Ps|Spr?|Pr[ed]{0,2}|H(oog)?l|Je?s|Je?r|Kl(aagl)?|Ez(ech)?|Da?n|Ho?s|Jl|Am|Ob|Mc|Mi[ch]{0,2}|Nah?|Hk|Hab|Zf|[SZ]ef|Ha?g|Zc|Zach|Ma?l|Ma?t|Mk|Mar|Lk|Jh|H(an)?d|Ro?m|Kor|Ga?l|Ef|Fp|Fil|Ko|[CK]ol|Th|Th?e[s]{1,2}|Tm|Ti?t|Fm|Fil(em)?|Hb|Hebr?|Jk|Ja[ck]|Pe?tr?|Joh|Jud|Op(enb)?|Wijsh|Tob|Sir|Bar|Makk)\.\s</beforebreak>
 <afterbreak></afterbreak>
@@ -1576,7 +1615,11 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak>\p{Lu}</afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b([Mm]ej|[Mm]evr|[Mm]rs|[Mm]s|[Mm]gr|[Mm]w|Ndl|Ned|Nl|No|Prof|[Ss]ecr|Chr|Jac|[Ww]ed)\.\s</beforebreak>
+<beforebreak>\b(Stb)\.\s</beforebreak>
+<afterbreak>[0-9]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\b([Mm]ej|[Mm]evr|[Mm]rs|[Mm]s|[Mm]gr|[Mm]w|Ndl|Ned|Nl|No|Prof|[Ss]ecr|Chr|Jac|[Ww]ed|Zr)\.\s</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -1616,7 +1659,15 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b(geb|[Gg]em|get|gld|id|[Ii]ncl|ind|inf|ing|intern|inz|ir|jhr|jkvr)\.\s</beforebreak>
+<beforebreak>\b(geb|[Gg]em|get|gld|id|[Ii]ncl|ind|inf|ing|intern|[Ss]ec|inz|ir|jhr|jkvr)\.\s</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\s(tel|red|min)\.\s</beforebreak>
+<afterbreak>[A-Z]</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\.(nl|be|com)\.\s</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -1634,6 +1685,22 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <rule break="no">
 <beforebreak>\b(prov|pseud|psych|qty|red|ref|resp|soc|st|tab|tel|temp|prof|tk)\.\s</beforebreak>
 <afterbreak></afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\sgraden C\.\s</beforebreak>
+<afterbreak>[A-Z]</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\svitamine [A-Z]\.\s</beforebreak>
+<afterbreak>[A-Z]</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>°C\.\s</beforebreak>
+<afterbreak>[A-Z][a-z]</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>[A-Z]&amp;[A-Z]\.\s</beforebreak>
+<afterbreak>[A-Z][a-z]</afterbreak>
 </rule>
 <rule break="no">
 <beforebreak>\b([A-Z]|Adr|Chr|Fr|Fred|IJ|Jac|Joh|Ph|St|Th|Tj|v|v\.(\s)?d)\.(\s)?</beforebreak>
@@ -1680,8 +1747,40 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak>\p{L}\.\s</afterbreak>
 </rule>
 <rule break="no">
+<beforebreak>\set al\.\s</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+<!--pa. as (wrong) abbrev for pag.-->
+<rule break="no">
+<beforebreak>\spa\.\s</beforebreak>
+<afterbreak>[0-9]</afterbreak>
+</rule>
+<!--op. as abbrev for opus-->
+<rule break="no">
+<beforebreak>\sop\.\s</beforebreak>
+<afterbreak>[0-9]|cit\.</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\soa\.\s</beforebreak>
+<afterbreak>[a-z]</afterbreak>
+</rule>
+<!--al. as abbrev for alinea-->
+<rule break="no">
+<beforebreak>\sal\.\s</beforebreak>
+<afterbreak>[0-9]</afterbreak>
+</rule>
+<!--Break also when the next sentence has no capital-->
+<rule break="yes">
+<beforebreak>\s((is|op|in|af|ik|ze|om|me|je|na|nu|al|ja|VS|EU|er|we|tv|he|ga|hè|hé|TV|as|ei|SP|pc|wc|PC|IS|NS|ok|AD|OK|at|OM|cd|VN|it|EK|In|pa|AZ|up|IT|FM|VI|ui|la|CD|CV|pr|ie|cv|WW|GB|Jo|Aa|UK|HD|oa|VU))\.\s</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+<rule break="no">
 <beforebreak>\b\p{L}\.</beforebreak>
 <afterbreak>\p{L}\.</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\sik\.\s</beforebreak>
+<afterbreak>ik\s</afterbreak>
 </rule>
 <rule break="no">
 <beforebreak>[\.\s]\p{L}{1,2}\.\s</beforebreak>
@@ -1697,6 +1796,10 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <rule break="no">
 <beforebreak>\b\p{Lu}\.\p{Lu}\.\s</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\s(op)\sX\.\s</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -1726,6 +1829,30 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <rule break="no">
 <beforebreak>Warner Bros\.</beforebreak>
+<afterbreak>[a-z]</afterbreak>
+</rule>
+<rule break="yes">
+<beforebreak>\s'[2-9][.]\s</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>(^|\s)[A-Z].+!\s</beforebreak>
+<afterbreak>[a-z]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\s[A-Z].+z\.\s</beforebreak>
+<afterbreak>[a-z]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\sart\.\s</beforebreak>
+<afterbreak>[0-9]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\b(jan|mrt|mar|jun|jul|aug|sept|okt|sep|spt|nov|dec|.*opp)\.\s</beforebreak>
+<afterbreak>[a-z]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>Groen!\s</beforebreak>
 <afterbreak>[a-z]</afterbreak>
 </rule>
 <rule break="yes">
@@ -4634,6 +4761,36 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <beforebreak>\.\[\d+\][\s\u00A0]</beforebreak>
 <afterbreak></afterbreak>
 </rule>
+<!-- 1. Punt primer-->
+<rule break="no">
+<beforebreak>^\d+\.[\s\u00A0]</beforebreak>
+<afterbreak>\p{L}</afterbreak>
+</rule>
+<!-- unknown abbreviations inside parentheses -->
+<rule break="no">
+<beforebreak>\([^\)]*?[\.:][\s\u00A0]</beforebreak>
+<afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\([^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0]</beforebreak>
+<afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\([^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0]</beforebreak>
+<afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\([^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0]</beforebreak>
+<afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\[[^\]]*\.[\s\u00A0]</beforebreak>
+<afterbreak>[^\]\r\n]*\]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\{[^\}]*\.[\s\u00A0]</beforebreak>
+<afterbreak>[^\}\r\n]*\}</afterbreak>
+</rule>
 <!-- initials: A. C. Jones. Problem: [...] d'Alfons I. Ell era [...] -->
 <rule break="no">
 <beforebreak>\b[A-ZÀÉÈÍÓÒÚ]\.[\s\u00A0]</beforebreak>
@@ -4641,7 +4798,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Abbreviations that cannot finish sentences-->
 <rule break="no">
-<beforebreak>\b(dc|(?iu)(n|Mr|C|Dr|Dra|Dra\. Ma|Sta\. Ma|E|Emm|Emma|Excm|Excma|Hble|I|Il·lm|Il·lma|Il·ltre|Im|Ima|Mgfc|Mgfca|Mn|R|Rev|Sr|Sra|Sres|Srs|St|Sta|a|abr|abs|acad|add|adj|adm|admdor|admdora|admtiu|admtiva|adv|ag|agl|agr|agron|agròn|aj|ajud|al|alim|amb|ampl|ant|ap|apmt|apnt|apr|aprox|apt|arm|arq|arqueol|arquit|assign|assoc|atm|aut|aux|av|b|batx|bda|bibl|bl|bnc|butll|bxs|c|calef|cartogr|cat|catedr|catol|cf|cia|cin|cint|circul|cit|climat|col|col·l|compt|cons|constr|cont|contr|conv|corp|corr|cpl|cpt|cró|ct|cte|ctra|cts|d|dept|derog|des|desp|dg|dip|disp|distr|div|dj|dl|doc|drec|ds|dt|dta|dte|dupl|dv|e|econ|ed|ef|entl|esc|esp|espf|esq|ex|exc|exp|exped|ext|f|fac|fca|febr|fig|figs|fra|gen|gov|gral|i|imp|impr|impt|inc|insp|inst|int|inv|j|jul|jur|jurispr|leg|llic|loc|ltda|làm|merc|mil·l|màx|mín|neg|nov|nre|núm|o|oct|op|p|pàg|pàgs|paq|par|pda|pg|pl|pobl|pol|ppda|ppt|pral|prev|prof|progr|prov|pta|ptes|ptge|pvt|pàg|quadr|quint|r|rbla|ref|reg|rev|secr|serv|sgt|sotsp|subsp|supl|supt|t|tel|telegr|tit|trad|trans|transcr|transf|trav|tripl|trv|tt|tèc|univ|urb|v|var|veg|venc|vid|vig|vocab|vs|x|àt|íd))\.[\s\u00A0]</beforebreak>
+<beforebreak>\b(dc|inst|coop|(?iu)(n|Mr|C|Dr|Dra|Dra\. Ma|Sta\. Ma|E|Emm|Emma|Excm|Excma|Hble|I|Il·lm|Il·lma|Il·ltre|Im|Ima|Mgfc|Mgfca|Mn|R|Rev|Sr|Sra|Sres|Srs|St|Sta|a|abr|abs|acad|add|adj|adm|admdor|admdora|admtiu|admtiva|adv|ag|agl|agr|agron|agròn|aj|ajud|al|alim|amb|ampl|ant|ap|apmt|apnt|apr|aprox|apt|arm|arq|arqueol|arquit|assign|assoc|atm|aut|aux|av|avda|b|batx|bda|bibl|bl|bnc|butll|bxs|c|calef|cartogr|cat|catedr|catol|cf|cia|cin|cint|circul|cit|climat|col|col·l|compt|cons|constr|cont|contr|conv|corp|corr|cpl|cpt|cró|ct|cte|ctra|cts|d|dept|derog|des|desp|dg|dip|disp|distr|div|dj|dl|doc|drec|ds|dt|dta|dte|dupl|dv|e|econ|ed|ef|entl|esc|esp|espf|esq|ex|exc|exp|exped|ext|f|fac|fca|febr|fig|figs|fra|gen|gov|gral|i|imp|impr|impt|inc|insp|inst|int|inv|j|jul|jur|jurispr|leg|llic|loc|ltda|làm|merc|mil·l|màx|mín|neg|nov|nre|núm|o|oct|op|p|pàg|pàgs|paq|par|pda|pg|pl|pobl|pol|ppda|ppt|pral|prev|prof|progr|prov|pta|ptes|ptge|pvt|pàg|quadr|quint|r|rbla|ref|reg|rev|secr|serv|sgt|sotsp|subsp|supl|supt|t|tel|telegr|tit|trad|trans|transcr|transf|trav|tripl|trv|tt|tèc|univ|urb|v|var|veg|venc|vid|vig|vocab|vs|x|àt|íd|subg))\.[\s\u00A0]</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <!-- Abbreviations that can finish sentences -->
@@ -4658,7 +4815,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak>[XIV\d]+\b</afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b([Ee]ds?|[Cc]oords?|\d+(r|n|t|è|é|a|rs|ns|es)|seg|masc|fem|sing|pl|adj|adv|g|kg|m|km|cm|ha|u|h|hrs|s|ss|alt|cant|cast|cert|com|dir|gr|nom|parc|pres|set|Sr|Jr|Admón|Adm|Inc|Co|Hnos|Vda|[VU]d[s]?)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
+<beforebreak>\b(Ltd|[Ee]ds?|[Cc]oords?|\d+(r|n|t|è|é|a|rs|ns|es)|seg|masc|fem|sing|pl|adj|adv|g|kg|m|km|cm|ha|u|h|hrs|s|ss|alt|cant|cast|cert|com|dir|grs?|nom|parc|pres|set|Sr|Jr|Admón|Adm|Inc|Co|Hnos|Vda|[VU]d[s]?)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
 <afterbreak>[\-¡¿«»"'\u2018\u201C\p{Ps}\u2012\u2013\u2014\u2015\u2053]*\p{Ll}</afterbreak>
 </rule>
 <!-- Any word in acronyms like U.S.A.F or F. B. I. or C. or c.s.p. or p. e. -->
@@ -4681,7 +4838,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- max min etc -->
 <rule break="no">
-<beforebreak>\b([Ee]tc|m[aáà]x|m[ií]n|aprox|\d+o)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
+<beforebreak>\b([Ee]tc|m[aáà]x|m[ií]n|aprox|long|\d+o)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
 <!-- Composed abbrev. -->
@@ -4696,12 +4853,12 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Ellipsis: ... lowercase -->
 <rule break="no">
-<beforebreak>[^\s\u00A0](\Q...\E|…)[\s\u00A0]</beforebreak>
+<beforebreak>[^\s\u00A0](\.\.\.|…)[\s\u00A0]</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
 <!-- (enum...) -->
 <rule break="no">
-<beforebreak>\b(\Q...\E|…)[\p{Pe}»"’”][\s\u00A0]</beforebreak>
+<beforebreak>\b(\.\.\.|…)[\p{Pe}»"’”][\s\u00A0]</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
 <!-- pero ¡ah! no estaba
@@ -4725,6 +4882,36 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 </languagerule>
 <languagerule languagerulename="Spanish">
+<!-- 1. Punto primero-->
+<rule break="no">
+<beforebreak>^\d+\.[\s\u00A0]</beforebreak>
+<afterbreak>\p{L}</afterbreak>
+</rule>
+<!-- unknown abbreviations inside parentheses -->
+<rule break="no">
+<beforebreak>\([^\)]*?[\.:][\s\u00A0]</beforebreak>
+<afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+  <beforebreak>\([^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0]</beforebreak>
+  <afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+  <beforebreak>\([^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0]</beforebreak>
+  <afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+  <beforebreak>\([^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0][^\)]*?[\.:][\s\u00A0]</beforebreak>
+  <afterbreak>[^\)\r\n]*\)</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\[[^\]]*\.[\s\u00A0]</beforebreak>
+<afterbreak>[^\]\r\n]*\]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>\{[^\}]*\.[\s\u00A0]</beforebreak>
+<afterbreak>[^\}\r\n]*\}</afterbreak>
+</rule>
 <rule break="no">
 <beforebreak>¿[^?]+:[\s\u00A0]</beforebreak>
 <afterbreak>.</afterbreak>
@@ -4748,12 +4935,12 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Ellipsis: ... lowercase -->
 <rule break="no">
-<beforebreak>[^\s\u00A0](\Q...\E|…)[\s\u00A0]</beforebreak>
+<beforebreak>[^\s\u00A0](\.\.\.|…)[\s\u00A0]</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
 <!-- (enum...) -->
 <rule break="no">
-<beforebreak>\b(\Q...\E|…)[\p{Pe}»"’”][\s\u00A0]</beforebreak>
+<beforebreak>\b(\.\.\.|…)[\p{Pe}»"’”][\s\u00A0]</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
 <!-- Abbreviations that can finish sentences -->
@@ -4787,7 +4974,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b(dc|(?iu)(n|[Aa]yto|Mr|C|Dr|Dra|E|Emm|Emma|Excm|Excma|Hble|I|Il·lm|Il·lma|Il·ltre|Im|Ima|Mgfc|Mgfca|Mn|R|Rev|Sr|Sra|Sres|Sras|Srs|St|Sta|a|abr|abs|acad|add|adj|adm|admdor|admdora|admtiu|admtiva|adv|ag|agl|agr|agron|agròn|aj|ajud|al|alim|amb|ampl|ant|ap|apmt|apnt|apr|aprox|apt|arm|arq|arqueol|arquit|assign|assoc|atm|aut|aux|av|b|batx|bda|bibl|bl|bnc|butll|bxs|c|calef|cartogr|cat|catedr|catol|cf|cia|cin|cint|circul|cit|climat|col|col·l|compt|cons|constr|cont|contr|conv|corp|corr|cpl|cpt|cró|ct|cte|ctra|cts|d|dept|derog|des|desp|dg|dip|disp|distr|div|dj|dl|doc|drec|ds|dt|dta|dte|dupl|dv|e|econ|ed|ef|entl|esc|esp|espf|esq|ex|exc|exp|exped|ext|f|fac|fca|febr|fig|figs|fra|gen|gov|gral|i|imp|impr|impt|inc|insp|inst|int|inv|j|jul|jur|jurispr|leg|llic|loc|ltda|làm|merc|mil·l|màx|mín|neg|nov|nre|núm|o|oct|op|p|pàg|pàgs|paq|par|pda|pg|pl|pobl|pol|ppda|ppt|pral|prev|prof|progr|prov|pta|ptes|ptge|pvt|pàg|quadr|quint|r|rbla|ref|reg|rev|secr|serv|sgt|sotsp|subsp|supl|supt|t|tel|telegr|tit|trad|trans|transcr|transf|trav|tripl|trv|tt|tèc|univ|urb|v|var|veg|venc|vid|vig|vocab|vs|x|àt|íd))\.[\s\u00A0]</beforebreak>
+<beforebreak>\b(dc|coop|(?iu)(n|[Aa]yto|Mr|C|Dr|Dra|E|Emm|Emma|Excm|Exc|Excma|Hble|I|Il·lm|Il·lma|Il·ltre|Ilm|Ilma|Iltre|Im|Ima|Mgfc|Mgfca|Mn|R|Rev|Sr|Sra|Sres|Sras|Srs|St|Sta|a|abr|abs|acad|add|adj|adm|admdor|admdora|admtiu|admtiva|adv|ag|agl|agr|agron|agròn|aj|ajud|al|alim|amb|ampl|ant|ap|apmt|apnt|apr|aprox|apt|arm|arq|arqueol|arquit|assign|assoc|atm|aut|aux|av|avda|b|batx|bda|bibl|bl|bnc|butll|bxs|c|calef|cartogr|cat|catedr|catol|cf|cia|cin|cint|circul|cit|climat|col|col·l|compt|cons|constr|cont|contr|conv|corp|corr|cpl|cpt|cró|ct|cte|ctra|cts|d|dept|derog|des|desp|dg|dip|disp|distr|div|dj|dl|doc|drec|ds|dt|dta|dte|dupl|dv|e|econ|ed|ef|entl|esc|esp|espf|esq|ex|exc|exp|exped|ext|f|fac|fca|febr|fig|figs|fra|gen|gov|gral|i|imp|impr|impt|inc|insp|inst|int|inv|j|jul|jur|jurispr|leg|llic|loc|ltda|làm|merc|mil·l|màx|mín|neg|nov|nre|núm|o|oct|op|p|pàg|pàgs|paq|par|pda|pg|pl|pobl|pol|ppda|ppt|pral|prev|prof|progr|prov|pta|ptes|ptge|pvt|pàg|quadr|quint|r|rbla|ref|reg|rev|secr|serv|sgt|sotsp|subsp|supl|supt|t|tel|telegr|tit|trad|trans|transcr|transf|trav|tripl|trv|tt|tèc|univ|urb|v|var|veg|venc|vid|vig|vocab|vs|x|àt|íd|subg))\.[\s\u00A0]</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -4808,7 +4995,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Abbreviations that can finish sentences -->
 <rule break="no">
-<beforebreak>\b([Ee]ds?|[Cc]oords?|grs?|Sr|Jr|Admón|Inc|Co|Hnos|Vda|[VUuv]d[s]?)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
+<beforebreak>\b(Ltd|[Ee]ds?|[Cc]oords?|\d+(r|n|t|è|é|a|rs|ns|es)|seg|masc|fem|sing|pl|adj|adv|g|kg|m|km|cm|ha|u|h|hrs|s|ss|alt|cant|cast|cert|com|dir|grs?|nom|parc|pres|set|Sr|Jr|Admón|Adm|Inc|Co|Hnos|Vda|[VU]d[s]?)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
 <afterbreak>[\-¡¿«»"'\u2018\u201C\p{Ps}\u2012\u2013\u2014\u2015\u2053]*\p{Ll}</afterbreak>
 </rule>
 <!-- Any word in acronyms like U.S.A.F or F. B. I. or C. or c.s.p. or p. e. -->
@@ -4831,7 +5018,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- max min etc -->
 <rule break="no">
-<beforebreak>\b([Ee]tc|m[aá]x|m[ií]n|aprox|\d+o)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
+<beforebreak>\b([Ee]tc|m[aá]x|m[ií]n|aprox|long|\d+o)\.[\p{Pe}\p{Pf}\p{Pd}"']*[\s\u00A0]</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
 <!-- Composed abbrev. -->
@@ -4862,6 +5049,10 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <rule break="no">
 <beforebreak>\b(https?|ftp|file|chrome|chromium|android|(chrome|moz)\-extension):///?[A-Za-z0-9\-]+\.</beforebreak>
 <afterbreak>[A-Za-z0-9\-]+(\.|\b)</afterbreak>
+</rule>
+<rule break="no"><!-- https://www.seven.one/ -->
+<beforebreak>\b[Se]even\.</beforebreak>
+<afterbreak>[Oo]nes?\b</afterbreak>
 </rule>
 <rule break="no">
 <beforebreak>\b[A-Za-z0-9\-]+\.</beforebreak>
@@ -5012,11 +5203,11 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- German abbreviations -->
 <rule break="no">
-<beforebreak>\b(betr|Geb|Stk|ggü|Mag|mtl|[Pp]arl|versch|[Ss]tellv|d|Übers|usw|[Bb]zw|Ab[hkst]|[Aa]bzü?gl|[Ll]tda|[Ee]inschl|[Vv]mtl|Ev|bezgl|Abzw|[Vv]sl|ahd|Akk|aktual|allg|alltagsspr|altdt|alttest|amerikan|Anh|Ank|Anm|Art|[Aa]utom|Auftragsnr|Az|Bat|bayr|Bde?|bearb|Bed|Bem|bes|bez|Bez|Bhf|bspw|btto|bw|Dtl|Dez)\.[\u00A0\s]{1,2}</beforebreak>
+<beforebreak>\b(betr|Geb|Stk|ggü|Mag|mtl|Flgh?|[Pp]arl|Bsp|versch|[Dd]iesbzgl|[Zz]ykl|[Dd]bzgl[Ss]tellv|d|Übers|usw|[Bb]zw|Ab[hkst]|[Ee]ig|[Aa]bzü?gl|\d+-tlg|tlg|[Gg]gfls|[Ff]achspr|[Ll]tda|[Ee]inschl|[Vv]mtl|[Ss]tellv|Ev|[Bb]ezgl|lit|Abzw|[Vv]sl|ahd|Akk|aktual|[Öö]ffentl|prof|allg|alltagsspr|altdt|alttest|amerikan|Anh|Ank|Anm|Art|[Aa]utom|Auftragsnr|Az|Bat|bayr|Bde?|bearb|Bed|Bem|bes|bez|wsl|vsl|Bez|Bhf|Blvd|[Bb]spw|btto|bw|Dtl|[Gg]esetzl|Dez|[Jj]gdfr|[Ee]ff)\.[\u00A0\s]{1,2}</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b(cts?|[Cc]a|chem|chin|Chr|cresc|[Dd]at|desgl|ders|dgl|Dipl|Dir?|Doz?|durchg|durchges|Dr|dt|ebd|Ed|[Ee]igt?l|akt|[Ee]ngl|Erg|al|et[cw]|Etw|ev|[Ee]vtl?|[Ee]xkl|Expl|Exz)\.[\u00A0\s]{1,2}</beforebreak>
+<beforebreak>\b(cts?|[Cc]a|chem|chin|Chr|cresc|[Dd]at|desgl|ders|dgl|Dipl|Dir?|Doz?|durchg|durchges|Dr|[Dd]t|ebd|Ed|[Ee]igt?l|akt|[Ee]ngl|Erg|al|et[cw]|Etw|ev|[Ee]vtl?|[Ee]xkl|Expl|Exz)\.[\u00A0\s]{1,2}</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -5040,7 +5231,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b(Part|Per[fs]|Pfd|Pl(ur)?|pl|Plusq|Pos|pp|Prä[ps]|Prät|Pro[vf]|rd|reg|resp|Rhld|rit|Sa|südl|Br|se[ln]|Sept|Sing|sign|So|sog|Sp|Std?|stacc|Str|stud|Subst|sva|svw|sZ)\.[\u00A0\s]{1,2}</beforebreak>
+<beforebreak>\b(Part|Per[fs]|Pfd|Pl(ur)?|pl|Plusq|Pos|pp|Prä[ps]|Prät|Pro[vf]|rd|reg|resp|Rhld|rit|Sa|südl|Br|se[ln]|Sept|Sing|sign|So|sog|Sp|[Ss]td?|stacc|Str|stud|Subst|sva|svw|sZ)\.[\u00A0\s]{1,2}</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -5052,7 +5243,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak>[\-–][\u00A0\s]\d+</afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b(Tel|teilw|Temp|trans|Tsd|übertr|übl|ff|überarb|ugs|univ|unveränd|urspr|USt|UST|USt\-IdNr|[Aa][bn]schl|sw|kl|[Gg]r|vgl|vll|Vll|vlt|Vlt|vllt|Vllt|Vgl|Vol|vollst|vorm|Vp|Vs|vs|wesentl|[Rr]echts?staatl|[Ss]taatl|wg|Whg|Hd|Ztr|zus|Zus|zzt?|zzgl|zB|zb|Zz|Zt|zw|Min|Bzgl|bzgl|bezügl|Frhr|ggfs|insb|autom|Mw[sS]t)\.[\u00A0\s]{1,2}</beforebreak>
+<beforebreak>\b(Tel|teilw|Temp|trans|Tsd|übertr|übl|ff|überarb|ugs|univ|unveränd|urspr|USt|UST|USt\-IdNr|[Aa][bn]schl|sw|kl|[Gg]r|vgl|vll|Vll|vlt|Vlt|vllt|Vllt|Vgl|Vol|vollst|vorm|Vp|Vs|vs|wesentl|voraussichtl|[Rr]echts?staatl|[Ss]taatl|wg|Whg|Hd|Ztr|zus|Zus|zzt?|zzgl|zB|zb|Zz|Zt|zw|Min|Bzgl|bzgl|bezügl|Frhr|ggfs|insb|autom|Mw[sS]t)\.[\u00A0\s]{1,2}</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <!-- Break rules -->
@@ -5173,7 +5364,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <rule break="no">
 <beforebreak>\bLL\.\s?</beforebreak>
-<afterbreak>[BM]\.?</afterbreak>
+<afterbreak>[BMD]\.?</afterbreak>
 </rule>
 <rule break="no">
 <beforebreak>\b[BM]\.\s?</beforebreak>
@@ -5472,7 +5663,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\bLL\.[\s\u00A0]?[BM]\.[\s\u00A0]</beforebreak>
+<beforebreak>\bLL\.[\s\u00A0]?[BMD]\.[\s\u00A0]</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
@@ -5481,7 +5672,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <rule break="no">
 <beforebreak>\bLL\.[\s\u00A0]?</beforebreak>
-<afterbreak>[BM]\.?</afterbreak>
+<afterbreak>[BMD]\.?</afterbreak>
 </rule>
 <rule break="no">
 <beforebreak>\b[BM]\.[\s\u00A0]?</beforebreak>
@@ -5537,6 +5728,14 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak>\p{Lu}\p{Ll}</afterbreak>
 </rule>
 </languagerule>
+
+<languagerule languagerulename="Crimean Tatar">
+<rule break="no">
+<beforebreak>\b[0-9]+(\.|:)[0-9][0-9][\s\u00A0\u202F]</beforebreak>
+<afterbreak></afterbreak>
+</rule>
+</languagerule>
+
 <languagerule languagerulename="Ukrainian">
 <!-- when sentence starts with ellipsis: ...Мазій і Юхим теж. -->
 <rule break="no">
@@ -5545,7 +5744,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Наші в... Лос-Анджелесі -->
 <rule break="no">
-<beforebreak>\b(в|у|на|за|з|із|зі|зо)(\.\.\.|…)[\h\v]*</beforebreak>
+<beforebreak>(?U)\b(в|у|на|за|з|із|зі|зо)(\.\.\.|…)[\h\v]*</beforebreak>
 <afterbreak>\p{Lu}</afterbreak>
 </rule>
 <rule break="no">
@@ -5558,12 +5757,12 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Digit as a point number: 1. перший пункт -->
 <rule break="no">
-<beforebreak>\b\d{1,3}\.[\h]+</beforebreak>
+<beforebreak>(?U)\b\d{1,3}\.[\h]+</beforebreak>
 <afterbreak>\p{Ll}|\p{Lu}{2,}</afterbreak>
 </rule>
 <!-- various punctuation between lowercase letters -->
 <rule break="no">
-<beforebreak>\b\p{Ll}+[.!?][\h\v]*</beforebreak>
+<beforebreak>(?U)\b\p{Ll}+[.!?][\h\v]*</beforebreak>
 <afterbreak>\h*(([\(«]|[\[‐-―-][\h\v]*)?\p{Ll})</afterbreak>
 </rule>
 <rule break="no">
@@ -5572,17 +5771,17 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- lowercase letter abbreviations together: н.е., кв.м. -->
 <rule break="no">
-<beforebreak>\b\p{L}{1,2}\.</beforebreak>
+<beforebreak>(?U)\b\p{L}{1,2}\.</beforebreak>
 <afterbreak>\p{L}{1,2}\.</afterbreak>
 </rule>
 <!-- latin capital char abbreviations A. B. C. -->
 <rule break="no">
-<beforebreak>\b[\u00A0\u202F]?[A-Z]\.[\h\v]?</beforebreak>
+<beforebreak>(?U)\b[\u00A0\u202F]?[A-Z]\.[\h\v]?</beforebreak>
 <afterbreak>[A-Z][a-zA-Z'’.-]|[А-ЯІЇЄҐ]\.</afterbreak>
 </rule>
 <!-- capital char abbreviations А. Б. В. -->
 <rule break="no">
-<beforebreak>(^[\h\v]*|\([\h\v]*|[«„"]|(\b[А-ЯІЇЄҐACEIHOPX]\.-))[А-ЯІЇЄҐA-Z]\.[\h\v]*</beforebreak>
+<beforebreak>(?U)(^[\h\v]*|\([\h\v]*|[«„"]|(\b[А-ЯІЇЄҐACEIHOPX]\.-))[А-ЯІЇЄҐA-Z]\.[\h\v]*</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <!-- Іван Ч. (1914 р. н.) -->
@@ -5597,7 +5796,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Ів. Франко (але Ів Бутільє) -->
 <rule break="no">
-<beforebreak>(^|[\h\v])(Ів|Дж)\.[\h\v]+</beforebreak>
+<beforebreak>(^|[\h\v])(Ів|Дж|Ол)\.[\h\v]+</beforebreak>
 <afterbreak>[А-ЯІЇЄҐA-Z]</afterbreak>
 </rule>
 <!-- Year: 2000 р.:
@@ -5606,12 +5805,12 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
     а до лютого 2020 р. — затвердити
 -->
 <rule break="no">
-<beforebreak>\b([0-9]{2}|[0-9]{4})[\h\v]+р\.[\h\v]+</beforebreak>
+<beforebreak>(?U)\b([0-9]{2}|[0-9]{4})[\h\v]+р\.[\h\v]+</beforebreak>
 <afterbreak>[\h\v]*[№0-9‐-―-]</afterbreak>
 </rule>
 <!-- річка - р. Дніпро -->
 <rule break="no">
-<beforebreak>(?&lt;!\d[\h]*)\bр\.[\h\v]*</beforebreak>
+<beforebreak>(?U)(?&lt;!\d[\h]*)\bр\.[\h\v]*</beforebreak>
 <afterbreak>[\h]*(?!(На|Але|Так?)[\h\v]+)[А-ЯІЇЄҐA-Z][^\h]</afterbreak>
 </rule>
 <!-- У травні 1949 р. Грушківський район -->
@@ -5626,25 +5825,29 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Years: рр. -->
 <rule break="no">
-<beforebreak>\b([0-9]0|[0-9]{3}0)(-[мх])?рр\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\b([0-9]0|[0-9]{3}0)(-[мх])?рр\.[\h\v]*</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <!-- млн./млрд./грн. — frequent mistake -->
 <rule break="no">
-<beforebreak>\b(тис|млн|млрд|грн)\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\b(тис|млн|млрд|грн)\.[\h\v]*</beforebreak>
 <afterbreak>[\h\v]*(\d|[КМ]Вт)</afterbreak>
 </rule>
 <!-- усталені скорочення, що не збігаються з нескороченими словами -->
 <rule break="no">
-<beforebreak>\b(укр|рос|англ?|амер|італ|ісп|нім|фр(анц)?|лат|грец(ьк)?)\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\b(укр|рос|англ?|амер|італ|ісп|нім|фр(анц)?|лат|грец(ьк)?)\.[\h\v]*</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b(абз|арк|ауд|бл|буд|бульв|вул|держ|дод|зав|зб|зв|зовн|екон|к|кв|канд|кн|напр|нпр|нац|обл|оп|пл|пол|поч|пп|пор|просп|розд|стор|табл|[Тт]]ел|ч|част)\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\b(абз|арк|ауд|бл|буд|бульв|вул|держ|дод|зав|зб|зв|зовн|екон|к|кв|канд|кн|напр|нпр|нац|обл|оп|пл|пол|поч|пп|пор|просп|розд|стор|табл|[Тт]]ел|ч|част)\.[\h\v]*</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\b[сС]т\.[\h\v]</beforebreak>
+<beforebreak>(?U)\b(кін)\.[\h\v]*</beforebreak>
+<afterbreak>[а-яіїєґ0-9IXV]|[ІХ]+\b</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>(?U)\b[сС]т\.[\h\v]</beforebreak>
 <afterbreak>[\h]*(?!([АВУОІЄ]|На|Але|Так?)[\h\v])</afterbreak>
 </rule>
 <!-- нар. 1945 р. | (1966 р. нар.) | 1975 — нар. Осипчук -->
@@ -5653,21 +5856,21 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak></afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\bнар\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\bнар\.[\h\v]*</beforebreak>
 <afterbreak>([0-9]|бл\.|арт\.)</afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\bдол\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\bдол\.[\h\v]*</beforebreak>
 <afterbreak>США</afterbreak>
 </rule>
 <!-- п. 10 від 11.10.1933, д. Василь -->
 <rule break="no">
-<beforebreak>(?&lt;!т\.[\h\v]?)\b[пд]\.[\h\v]*</beforebreak>
+<beforebreak>(?U)(?&lt;!т\.[\h\v]?)\b[пд]\.[\h\v]*</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <!-- усталені скорочення, що збігаються з нескороченими словами -->
 <rule break="no">
-<beforebreak>\b(див)\.[\h\v]</beforebreak>
+<beforebreak>(?U)\b(див)\.[\h\v]</beforebreak>
 <afterbreak>[\h\v]*[^А-ЯІЇЄҐ]</afterbreak>
 </rule>
 <!-- Верховний орган, див. Африканський національний конгрес -->
@@ -5679,20 +5882,20 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
     України (див. Зимові походи)
 -->
 <rule break="no">
-<beforebreak>(\([^)]*|\[[^\]]*|,[\h\v]*)\b(див)\.[\h\v]*</beforebreak>
+<beforebreak>(?U)(\([^)]*|\[[^\]]*|,[\h\v]*)\b(див)\.[\h\v]*</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <!-- abbreviation with proper noun: проф. Грицько, о. Лісове -->
 <rule break="no">
-<beforebreak>\b(ап|[Аа]кад|[Пп]роф|[Дд]оц|[Аа]сист|[Рр]еж|[Аа]рх|[Сс]вв?|о|оз|ім|інж|дир|тов|упоряд|тт|чл\.-кор|[Пп]реп)\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\b(ап|[Аа]кад|[Пп]роф|[Дд]оц|[Аа]сист|[Рр]еж|[Аа]рх|[Сс]вв?|о|оз|ім|інж|дир|тов|упоряд|тт|чл\.-кор|[Пп]реп|[сС]вт)\.[\h\v]*</beforebreak>
 <afterbreak>[\h\v]*[А-ЯІЇЄҐA-Z]</afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>(?&lt;![іи]\s+)\bдр\.[\h\v]*</beforebreak>
+<beforebreak>(?U)(?&lt;![іи]\s+)\bдр\.[\h\v]*</beforebreak>
 <afterbreak>[\h\v]*[А-ЯІЇЄҐ]</afterbreak>
 </rule>
 <rule break="no">
-<beforebreak>\bМан\.[\h\v]*</beforebreak>
+<beforebreak>(?U)\bМан\.[\h\v]*</beforebreak>
 <afterbreak>[\h\v]*([Сс]іті|[Юю]н)</afterbreak>
 </rule>
 <!-- смерть гр. Болтаровича, but not "9 гр." -->
@@ -5702,8 +5905,8 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- TODO: арт. - артист -->
 <rule break="no">
-<beforebreak>\b([Аа]рт|[Мм]ал|[Рр]ис)\.[\h\v]*</beforebreak>
-<afterbreak>[\h\v]*[0-9]</afterbreak>
+<beforebreak>(?U)\b([Аа]рт|[Мм]ал|[Рр]ис|[Сс]пр)\.[\h\v]*</beforebreak>
+<afterbreak>[\h\v]*(№[\h\v]*)?[0-9]</afterbreak>
 </rule>
 <!-- ХІІ р., 3-6 арт., 2-3 тт. -->
 <rule break="no">
@@ -5712,13 +5915,13 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- але розбиваємо «всього 20 м. Почалося» -->
 <rule break="no">
-<beforebreak>(?&lt;!\d[\h\v]*)\bм\.[\h\v]*</beforebreak>
-<afterbreak>[А-ЯІЇЄҐ][а-яіїєґ]</afterbreak>
+<beforebreak>(?U)(?&lt;!\d[\h\v]*)\bм\.[\h\v]*</beforebreak>
+<afterbreak>[А-ЯІЇЄҐ][а-яіїєґ']</afterbreak>
 </rule>
 <!-- село/сторінка/місто, але щоб не збігалося з секундами/метрами -->
 <rule break="no">
 <beforebreak>([\h\v][«(][см]|[^0-9/. ][\h\v]+[см])\.[\h\v]+</beforebreak>
-<afterbreak>[А-ЯІЇЄҐ]</afterbreak>
+<afterbreak>[А-ЯІЇЄҐ][а-яіїєґ']</afterbreak>
 </rule>
 <!-- (реж. Емманюель -->
 <rule break="no">
@@ -5733,7 +5936,16 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <!-- статус правових держав. — Авт.). -->
 <rule break="no">
 <beforebreak></beforebreak>
-<afterbreak>[\h\v]*[‐-―-][\h\v]*([Рр]ед|[Аа]вт)[\h\v]*\.[\)\]]</afterbreak>
+<afterbreak>[\h\v]*[‐-―-][\h\v]*([Рр]ед|[Аа]вт)\.[\h\v]*[\)\]]</afterbreak>
+</rule>
+<rule break="no">
+<beforebreak>(?U)\b([Рр]ед)\.[\h\v]*</beforebreak>
+<afterbreak>[А-ЯІЇЄҐ]</afterbreak>
+</rule>
+<!-- Цензор.НЕТ -->
+<rule break="no">
+<beforebreak>[а-яіїєґ]\.</beforebreak>
+<afterbreak>НЕТ|Інфо|Info|City|Life|UA|Ру</afterbreak>
 </rule>
 <!-- але лишаємо ініціали: С.\u202F Шелухин -->
 <rule break="yes">
@@ -5755,6 +5967,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <afterbreak>([‐-―-][\h\v]*)?\p{Lu}[^\p{Lu}]</afterbreak>
 </rule>
 </languagerule>
+
 <languagerule languagerulename="Belarusian">
 <rule break="no">
 <beforebreak>\b\d+\.\s</beforebreak>
@@ -6219,7 +6432,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- Not break for ellipses (...) -->
 <rule break="no">
-<beforebreak>[^\s](\Q...\E|…)\s</beforebreak>
+<beforebreak>[^\s](\.\.\.|…)\s</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
 </rule>
 <!-- z.B. "bla (...) blubb" -> without ending sentence -->
@@ -6493,7 +6706,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 
 Не раздвајати после наводника осим ако нису праћени
 великим словом. На пример:
-	"Тако је!", рече он.-->
+    "Тако је!", рече он.-->
 <rule break="no">
 <beforebreak>["'“],\s</beforebreak>
 <afterbreak>\p{Ll}</afterbreak>
@@ -6541,7 +6754,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 </rule>
 <!-- German abbreviations -->
 <rule break="no">
-<beforebreak>\b(versch|d|Übers|usw|Ab[hkts]|ahd|Akk|aktual|allg|alltagsspr|altdt|alttest|amerikan|Anh|Ank|Anm|Art|Az|Bat|bayr|Bd|Bde|bearb|Bed|Bem|bes|bez|Bez|Bhf|bspw|btto|bw|bzw)\.\s</beforebreak>
+<beforebreak>\b(versch|d|Übers|usw|Ab[hkts]|ahd|Akk|aktual|allg|alltagsspr|altdt|alttest|amerikan|Anh|Ank|Anm|Art|Az|Bat|bayr|Bd|Bde|bearb|Bed|Bem|bes|bez|Bez|Bhf|bspw|btto|bw|bzw|pot)\.\s</beforebreak>
 <afterbreak></afterbreak>
 </rule>
 <!--Српске скраћенице-->
@@ -6774,6 +6987,7 @@ Tussen de twee wereldoorlogen vestigde prof. ir. Messerschmitt zich in Augsburg 
 <languagemap languagepattern="(ML|ml).*" languagerulename="Generic"></languagemap>
 <languagemap languagepattern="(TL|tl).*" languagerulename="Generic"></languagemap>
 <languagemap languagepattern="(AST|ast).*" languagerulename="Generic"></languagemap>
+<languagemap languagepattern="(CRH|crh).*" languagerulename="Generic"></languagemap>
 <languagemap languagepattern=".*" languagerulename="Default"></languagemap>
 </maprules>
 </body>

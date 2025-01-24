@@ -8,6 +8,8 @@
 3G
 4D
 4G
+4K
+4k
 5G
 AI
 Al
@@ -16,6 +18,8 @@ AR
 B
 BI
 B2B
+b2b
+B2C
 CAD
 call
 CD
@@ -28,17 +32,21 @@ css
 d
 DDoS
 DJ
+dj
 DNS
 DoS
 DSL
 dvd
 e
+e-commerce
+e-mail
 F
 fashion
 FB
 feed
 FM
 ftp
+FPV
 G
 GMP
 GPRS
@@ -48,24 +56,32 @@ grid
 GSM
 h
 HD
+hi-tech
 HR
+hr
 HSDPA
 HTML
 HTML5
 ID
+id
 IgG4
 IMEA
 IP
 ip
 IQ
 IT
+it
 java
 javascript
+JS
+js
+Ku
 L
 led
 LCD
 LNG
 live
+M&A
 ML
 MLM
 MP4
@@ -73,27 +89,42 @@ MTV
 mp3
 n
 Na
+NF
+NFT
 NH2
+on-line
 OSB
 p
+P2E
 P2P
+p2p
+PC
 pdf
 PhD
 pH
 PHP
 PIN
 POS
+PS4
+PS5
 pr
 Q
 QA
+Q&A
 QR
 Qr
+qr
 R
 R'n'B
 R'N'B
 R&B
 R&D
+RC
+RS
+RT
+ru
 s
+S
 SD
 SH2
 sim
@@ -112,6 +143,8 @@ URL
 USB
 UV
 UX
+V
+V8
 VIN
 vip
 VIP
@@ -120,16 +153,27 @@ VR
 W
 WAP
 web
+Web3
+Wi-Fi
+wi-fi
 WSB
 WTA
 X
+x86
 XML
+XR
 Y
+You-Tube
+YouTube
 Z
+z :slang
+Zoom
 АІ :bad
+айті
 акаунт :slang
 аль
 альфа
+андеграунд
 андроїд
 аніме
 АРВ
@@ -146,6 +190,7 @@ Z
 бейбі
 бекенд
 бета
+беттинг :bad
 бізнес
 білінг
 біткойн
@@ -172,6 +217,7 @@ Z
 б'юті
 бьюті :bad
 В2В :bad
+вайбер
 вай-фай
 вайфай
 вакуум
@@ -180,6 +226,7 @@ Z
 веб-сервер :ua_1992
 вебсервер
 вейвлет
+вейп
 велнес
 вендинг
 ВІЛ
@@ -222,6 +269,7 @@ Z
 дизель
 дискурс
 діджитал :slang
+диджитал :slang
 ДНК
 долбі
 допінг
@@ -279,6 +327,7 @@ Z
 караоке
 кастинг
 квіз
+квір
 кемпінг
 кваліфайн
 квест
@@ -345,6 +394,7 @@ Z
 міні :ua_1992
 МММ
 модерн
+Монтессорі
 моушн :slang
 МРТ
 мульт
@@ -461,6 +511,7 @@ Z
 телеком
 тест
 тета
+ТГ
 топ :ua_1992
 топлес
 торент
@@ -477,6 +528,7 @@ Z
 ультрас
 ура
 УФ
+фальш
 фан
 ФБ
 фб :bad

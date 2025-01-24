@@ -174,14 +174,20 @@ public class SubjectVerbAgreementRule extends Rule {
     Arrays.asList(
       pos(JLanguageTool.SENTENCE_START_TAGNAME),
       pos("ZAL"),
-      tokenRegex("Tage|Monate|Jahre"),
+      tokenRegex("Minuten|Stunden|Tage|Monate|Jahre|Jahrzehnte"),
+      posRegex("VER:3:SIN:.*")
+    ),
+    Arrays.asList(
+      pos(JLanguageTool.SENTENCE_START_TAGNAME),
+      tokenRegex("einige|viele|wenige|mehrere"),
+      tokenRegex("Minuten|Stunden|Tage|Monate|Jahre|Jahrzehnte"),
       posRegex("VER:3:SIN:.*")
     ),
     Arrays.asList(
       pos(JLanguageTool.SENTENCE_START_TAGNAME),
       posRegex("ADV:MOD|ADJ:PRD:GRU"),
       pos("ZAL"),
-      tokenRegex("Tage|Monate|Jahre"),
+      tokenRegex("Minuten|Stunden|Tage|Monate|Jahre|Jahrzehnte"),
       posRegex("VER:3:SIN:.*")
     ),
     Arrays.asList(
@@ -401,11 +407,58 @@ public class SubjectVerbAgreementRule extends Rule {
       new PatternTokenBuilder().posRegex("(ADJ|PA[12]).*").min(0).build(),
       posRegex("SUB.*GEN.*PLU.*"),
       posRegex("VER.*PLU.*")
+    ),
+    Arrays.asList(
+      // Ich verspreche dir, dass wir ein tolles Team sind.
+      tokenRegex("wir|sie|die|alle|diese|einige|manche|viele|sonstige"),
+      posRegex("ART.*|PRO:(POS|DEM|IND).*"),
+      new PatternTokenBuilder().posRegex("(ADJ|PA[12]).*").min(0).build(),
+      posRegex("SUB.*SIN.*"),
+      posRegex("VER.*PLU.*")
+    ),
+    Arrays.asList(
+      // Ich verspreche dir, dass wir ein wirklich tolles Team sind.
+      tokenRegex("wir|sie|die|alle|diese|einige|manche|viele|sonstige"),
+      posRegex("ART.*|PRO:(POS|DEM|IND).*"),
+      posRegex("(ADJ|PA[12]).*|ADV.*"),
+      posRegex("(ADJ|PA[12]).*"),
+      posRegex("SUB.*SIN.*"),
+      posRegex("VER.*PLU.*")
+    ),
+    Arrays.asList(
+      new PatternTokenBuilder().token("sie").setSkip(-1).build(),
+      tokenRegex("sind|w[äa]ren")
+    ),
+    Arrays.asList(
+      tokenRegex("weder"),
+      tokenRegex("er|es|sie"),
+      new PatternTokenBuilder().token("noch").setSkip(-1).build(),
+      tokenRegex("sind|w[äa]ren")
+    ),
+    Arrays.asList(
+      new PatternTokenBuilder().posRegex("SUB.*PLU.*").setSkip(5).build(),
+      tokenRegex("sind|w[äa]ren")
+    ),
+    Arrays.asList(
+      // Halte ich für unwahrscheinlich, dass es Spannungsspitzen sind.
+      new PatternTokenBuilder().posRegex("SUB.*INF|SUB.*PLU.*").build(),
+      tokenRegex("sind|w[äa]ren")
+    ),
+    Arrays.asList(
+      tokenRegex("Teile"),
+      tokenRegex("de[rs]|diese[sr]|[msd]?eine[rs]"),
+      new PatternTokenBuilder().posRegex("SUB.*|EIG.*|UNKNOWN").setSkip(-1).build(),
+      tokenRegex("sind|w[äa]ren")
+    ),
+    Arrays.asList(
+      tokenRegex("viele|alle"),
+      new PatternTokenBuilder().posRegex("SUB.*ADJ").tokenRegex(".+e").build(),
+      tokenRegex("sind|w[äa]ren")
     )
   );
 
   private final Supplier<List<DisambiguationPatternRule>> antiPatterns;
-  private German language;
+  private final German language;
 
   public SubjectVerbAgreementRule(ResourceBundle messages, German language) {
     this.language = language;
